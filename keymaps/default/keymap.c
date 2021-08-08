@@ -232,7 +232,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 lgui_pressed = true;
                 lgui_pressed_time = record->event.time;
-                writePin(LED_SCROLL_LOCK_PIN, 1);
             } else {
                 if (lgui_pressed && (TIMER_DIFF_16(record->event.time, lgui_pressed_time) < TAPPING_TERM)) {
                     tap_code(KC_DEL);
@@ -242,7 +241,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     unregister_code(KC_LGUI);
                 }
                 lgui_registered = false;
-                writePin(LED_SCROLL_LOCK_PIN, 0);
             }
             return false;
         case KC_LGUI:
