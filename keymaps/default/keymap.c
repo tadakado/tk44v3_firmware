@@ -28,8 +28,8 @@ enum custom_keycodes {
     IME,
     MAC,
     WIN,
-    LCLR,
-    FLST,
+    CLR,
+    FST,
     DUMMY
 };
 
@@ -37,7 +37,7 @@ const key_string_map_t custom_keys_user =
 {
     .start_kc = LOWER,
     .end_kc = DUMMY,
-     .key_strings = "LOWER\0RAISE\0ADJUST\0GT_DEL\0GT_BSPC\0IME\0MAC\0WIN\0LCLR\0FLST\0DUMMY\0"
+     .key_strings = "LOWER\0RAISE\0ADJUST\0GT_DEL\0GT_BSPC\0IME\0MAC\0WIN\0CLR\0FST\0DUMMY\0"
 };
 
 enum layers {
@@ -185,7 +185,23 @@ void flag_status() {
     uprintf("ble_enabled: %d\r", get_ble_enabled());
     uprintf("ble_status: %04x\r", *(uint16_t *)BLE_STATUS);
     uprintf("ble_device: %04x\r", *(uint16_t *)BLE_DEVICE);
-    status_on_led();
+}
+
+void clear_modifiers(void) {
+    unregister_code(KC_LSFT);
+    unregister_code(KC_LCTL);
+    unregister_code(KC_LALT);
+    unregister_code(KC_LGUI);
+    unregister_code(KC_RSFT);
+    unregister_code(KC_RCTL);
+    unregister_code(KC_RALT);
+    unregister_code(KC_RGUI);
+    lower_pressed = false;
+    raise_pressed = false;
+    lgui_pressed = false;
+    lgui_registered = false;
+    rgui_pressed = false;
+    rgui_registered = false;
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -290,15 +306,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       	        mac_mode = false;
             }
             return false;
-        case LCLR:
-            dprint("LCLR\r");
+        case CLR:
+            dprint("CLR\r");
             if (record->event.pressed) {
-                uprint("layer clear\r");
+                uprint("##### clear keyboard #####\r");
                 layer_clear();
+                clear_modifiers();
+                clear_keyboard();
             }
             return false;
-        case FLST:
-            dprint("FLST\r");
+        case FST:
+            dprint("FST\r");
             if (record->event.pressed) {
                 flag_status();
             }
